@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Safety Report app</title>
+    </head>
+
+    <body>
+        <h1>Pending Reports</h1>
+
+        <form method="GET">
+          <input type="text" name="search" />
+          <input type="submit" value="Search"/>
+        </form>
+
+        {% if not reports %}
+            <p>No pending reports!</p>
+        {% else %}
+            <p>The following reports are pending processing:</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for report in reports %}
+                  <tr>
+                    <td>{{ report.date|safe }}</td>
+                    <td>{{ report.description|safe }}</td>
+                    <td>
+                      {% if request.user == report.reviewer %}
+                        {% if report.processed %}
+                        Processed
+                        {% else %}
+                        <a href="/reports/{{ report.id }}/process">
+                          Process
+                        </a>
+                        {% endif %}
+                      {% else %}
+                        Awaiting processing
+                      {% endif %}
+                    </td>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        <form action='logout/' method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Logout"/>
+        </form>
+    </body>
+</html>

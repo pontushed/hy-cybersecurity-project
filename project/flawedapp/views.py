@@ -35,9 +35,6 @@ def myReportsView(request, userid):
     return render(request, 'pages/my-reports.html', {"reports": reports})
 
 
-def singleReportView(request, report_id):
-    return HttpResponse("Report number " + str(report_id) + " should be visible here.")
-
 # Flaws:
 # Cross-Site Scripting XSS
 # Injection
@@ -46,7 +43,7 @@ def singleReportView(request, report_id):
 # post a new report on behalf of another user, if the ID is known. The description field allows SQL injection.
 # Fix:
 # Remove the @csrf_exempt decorator
-# Comment lines 65-67
+# Comment lines 60-62
 # Uncomment lines 63-65
 
 
@@ -69,17 +66,17 @@ def addReportView(request, userid):
         return redirect('/' + str(reporter.id) + '/reports')
 
 # Flaws:
-# Sensitive Data Exposure
 # Broken Authentication
 # Broken Access Control
 # Explanation: A logged in user can change the status of any report by using the ID in the URL
 # Fix:
-# Add checks for reporter and reviewer, and change the status only if these are correct
+# Add a check for reviewer, and change the status only if reviewer.id matches request.user.id.
 
 
 @login_required
 def processReportView(request, report_id):
     report = SafetyReport.objects.get(id=report_id)
+    # if report.reviewer.id == request.user.id:
     report.processed = True
     report.save()
     return redirect('/reports')

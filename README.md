@@ -1,3 +1,5 @@
+![Django CI](https://github.com/pontushed/hy-cybersecurity-project/workflows/Django%20CI/badge.svg)
+
 # Cybersecurity Base 2020 Project
 
 Pontus Hedlund
